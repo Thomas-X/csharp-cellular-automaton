@@ -10,13 +10,15 @@ namespace RandomBitMapImage
 {
     class World
     {
-        public static int pixelSize = 1;
+        public static int pixelSize = 16;
         static int chanceToGetLand = 80;
         public static int height = 0;
         public static int width = 0;
-        Random rand = new Random();
+        public static int amountOfColonies = 6;
+        public static Random rand = new Random();
         public static Bitmap world = null;
         public static int multiplier = 0;
+        public static Colony[] colonies;
 
         // since there is a setting for pixelsize meaning the tiles are not 1:1 to pixels, depending on the 
         // pixelSize this tiles ratio is 1:pixelSize. 
@@ -27,22 +29,47 @@ namespace RandomBitMapImage
 
         public World (int height, int width)
         {
-         
             World.height = height;
             World.width = width;
-        
             World.multiplier = World.pixelSize;
-
         }
         
         public Bitmap regenerateWorld()
         {
             World.tiles = new TileGroup[World.height / pixelSize, World.width / pixelSize];
             World.world = new Bitmap(World.height, World.width);
-
             this.createTileGroups();
-            Console.WriteLine(World.tiles);
+            World.colonies = this.createColonies();
             return World.world;
+        }
+
+        // TODO implement updating the current world (bitmap)
+        public Bitmap updateWorld()
+        {
+            return World.world;
+        }
+
+        public void onTick()
+        {
+            for (int o = 0; o < colonies.Length;o++)
+            {
+                colonies[o].update();
+            }
+        }
+
+        private Colony[] createColonies()
+        {
+            Colony[] colonies = new Colony[World.amountOfColonies];
+            for (int o = 0; o < World.amountOfColonies;o++)
+            {
+                Colony colony = new Colony(
+                        o,
+                        Color.FromArgb(World.rand.Next(256), World.rand.Next(256), World.rand.Next(256)),
+                        "Colony " + o.ToString()
+                    );
+                colonies.SetValue(colony, o);
+            }
+            return colonies;
         }
 
         private void createTileGroups()
@@ -54,7 +81,7 @@ namespace RandomBitMapImage
                     bool isLand = rand.Next(100) <= World.chanceToGetLand;
                     int tileCoordX = x / pixelSize;
                     int tileCoordY = y / pixelSize;
-                    World.tiles[tileCoordY, tileCoordX] = this.createTileGroup(x, y, isLand);
+                    World.tiles[tileCoordX, tileCoordY] = this.createTileGroup(x, y, isLand);
                 }
             }
         }

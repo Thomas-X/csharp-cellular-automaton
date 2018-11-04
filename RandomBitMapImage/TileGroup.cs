@@ -10,22 +10,33 @@ namespace RandomBitMapImage
     class TileGroup
     {
         public bool isLand;
-        public Color color;
+        public Color occupantColor;
+        public Color tileColor;
+        public Person occupant;
+        public int x;
+        public int y;
     
+        // TODO add tile properties like sea/land
         public TileGroup(int x, int y, bool isLand)
         {
-            Color color = Color.FromArgb(255, 0, 0, 0);
+            this.x = x;
+            this.y = y;
+            this.tileColor = Color.FromArgb(255, 0, 0, 0);
             if (isLand == true)
             {
-                color = Color.FromArgb(255, 124, 252, 0);
+                this.tileColor = Color.FromArgb(255, 124, 252, 0);
             }
             else if (isLand == false)
             {
-                color = Color.FromArgb(255, 0, 0, 230);
+                this.tileColor = Color.FromArgb(255, 0, 0, 230);
             }
             this.isLand = isLand;
-            this.color = color;
 
+            this.modifyTile(x, y, this.tileColor);
+        }
+
+        private void modifyTile (int x, int y, Color color)
+        {
             for (int i = 0; i < World.pixelSize; i += 1)
             {
                 for (int o = 0; o < World.pixelSize; o += 1)
@@ -41,5 +52,22 @@ namespace RandomBitMapImage
         {
             return new Tile(x,y,color);
         }
+
+        public void setOccupant(int x, int y, Color color, Person person)
+        {
+            this.occupantColor = color;
+            this.occupant = person;
+            this.modifyTile(x * World.pixelSize, y * World.pixelSize, this.occupantColor);
+        }
+
+        public void removeOccupant()
+        {
+            this.occupant = null;
+            // non-nullable type, it'll just be overwritten next time its fine
+            // this.occupantColor = null;
+            this.modifyTile(this.x, this.y, this.tileColor);
+        }
+
+        // add update tile 
     }
 }

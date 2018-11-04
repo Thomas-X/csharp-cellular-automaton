@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
+using Timer = System.Windows.Forms.Timer;
 
 namespace RandomBitMapImage
 {
@@ -16,25 +17,37 @@ namespace RandomBitMapImage
 
     public partial class Main : Form
     {
+        // how many MS 
+        static int tickSpeed = 2000; 
         Random rand = new Random();
+        World world;
 
 
         public Main()
         {
             InitializeComponent();
         }
-       
-        private void randomBitmap()
+
+        public void tick(object sender, EventArgs e)
         {
-            World world = new World(400, 400);
-            Bitmap bmp = world.regenerateWorld();
+            this.world.onTick();
+            pictureBox1.Image = World.world;
+        }
+
+        private void setupWorld()
+        {
+            this.world = new World(400, 400);
+            Bitmap bmp = this.world.regenerateWorld();
             pictureBox1.Image = bmp;
+            Timer timer = new Timer();
+            timer.Interval = Main.tickSpeed;
+            timer.Tick += new EventHandler(this.tick);
+            timer.Start();
         }
 
         private void onLoadWorld(object sender, EventArgs e)
         {
-            
-            this.randomBitmap();
+            this.setupWorld();
         }
 
         private void pictureBox1_LoadCompleted(object sender, AsyncCompletedEventArgs e)
@@ -43,7 +56,7 @@ namespace RandomBitMapImage
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.randomBitmap();
+            this.setupWorld();
             Console.WriteLine("you clicked on the button the re-render!!");
         }
 
