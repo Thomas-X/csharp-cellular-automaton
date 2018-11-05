@@ -10,8 +10,8 @@ namespace RandomBitMapImage
 {
     class World
     {
-        public static int pixelSize = 16;
-        static int chanceToGetLand = 80;
+        public static int pixelSize = 2;
+        static int chanceToGetLand = 100;
         public static int height = 0;
         public static int width = 0;
         public static int amountOfColonies = 6;
@@ -26,12 +26,35 @@ namespace RandomBitMapImage
         
         public static TileGroup[,] tiles;
 
-
         public World (int height, int width)
         {
             World.height = height;
             World.width = width;
             World.multiplier = World.pixelSize;
+        }
+
+        public string getColonyStats()
+        {
+            string str = "";
+            for (int o = 0; o < colonies.Length; o++)
+            {
+                Colony colony = colonies[o];
+                
+
+                str += colony.name;
+                str += Environment.NewLine;
+                int sum = 0;
+                for (int h = 0; h < colony.people.Count; h++)
+                {
+                    sum += colony.people[h].strength;
+                }
+                str += "Total strength of colony: " + sum.ToString();
+                str += Environment.NewLine;
+                str += "Size: " + colony.colonySize.ToString();
+                str += Environment.NewLine;
+                str += Environment.NewLine;
+            }
+            return str;
         }
         
         public Bitmap regenerateWorld()

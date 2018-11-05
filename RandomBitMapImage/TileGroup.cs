@@ -12,7 +12,7 @@ namespace RandomBitMapImage
         public bool isLand;
         public Color occupantColor;
         public Color tileColor;
-        public Person occupant;
+        public Person occupant = null;
         public int x;
         public int y;
     
@@ -53,8 +53,17 @@ namespace RandomBitMapImage
             return new Tile(x,y,color);
         }
 
+        public bool checkIfHasOccupant()
+        {
+            return this.occupant != null;
+        }
+
         public void setOccupant(int x, int y, Color color, Person person)
         {
+            if (this.isLand == false)
+            {
+                Console.WriteLine("someone tried to move on me!! while i am sea!");
+            }
             this.occupantColor = color;
             this.occupant = person;
             this.modifyTile(x * World.pixelSize, y * World.pixelSize, this.occupantColor);
@@ -63,11 +72,10 @@ namespace RandomBitMapImage
         public void removeOccupant()
         {
             this.occupant = null;
+            this.occupantColor = this.tileColor;
             // non-nullable type, it'll just be overwritten next time its fine
             // this.occupantColor = null;
             this.modifyTile(this.x, this.y, this.tileColor);
         }
-
-        // add update tile 
     }
 }

@@ -18,7 +18,7 @@ namespace RandomBitMapImage
     public partial class Main : Form
     {
         // how many MS 
-        static int tickSpeed = 2000; 
+        static int tickSpeed = 1; 
         Random rand = new Random();
         World world;
 
@@ -31,6 +31,8 @@ namespace RandomBitMapImage
         public void tick(object sender, EventArgs e)
         {
             this.world.onTick();
+            string stats = this.world.getColonyStats();
+            label1.Text = stats;
             pictureBox1.Image = World.world;
         }
 
@@ -39,6 +41,8 @@ namespace RandomBitMapImage
             this.world = new World(400, 400);
             Bitmap bmp = this.world.regenerateWorld();
             pictureBox1.Image = bmp;
+            string stats = this.world.getColonyStats();
+            label1.Text = stats;
             Timer timer = new Timer();
             timer.Interval = Main.tickSpeed;
             timer.Tick += new EventHandler(this.tick);
@@ -61,6 +65,11 @@ namespace RandomBitMapImage
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
         {
 
         }
