@@ -54,43 +54,43 @@ namespace RandomBitMapImage
 
         public void addPersonToColony(int x, int y)
         {
-            this.colonySize++;
-            // init random stats
-            int age = World.rand.Next(Colony.maxAge);
-            int strength = World.rand.Next(Colony.maxStrength);
-            bool isSick = false;
+                this.colonySize++;
+                // init random stats
+                int age = World.rand.Next(Colony.maxAge);
+                int strength = World.rand.Next(Colony.maxStrength);
+                bool isSick = false;
 
-            // init person
-            Person p = new Person(age, strength, isSick, this.color);
+                // init person
+                Person p = new Person(age, strength, isSick, this.color);
 
-            // set person data
-            p.setStartPosition(this.startPosition);
-            p.setColonyID(this.id);
-            p.spawnOnTheWorld(Colony.maxSpreadAroundColonySize);
-
-            this.people.Add(p);
+                // set person data
+                p.setStartPosition(this.startPosition);
+                p.setColonyID(this.id);
+                p.spawnOnTheWorld(Colony.maxSpreadAroundColonySize);
+                this.people.Add(p);
         }
 
         public void removePersonFromColony (int x, int y)
         {
-            this.colonySize--;
-            Person p = null;
-            for (int i = 0; i < this.people.Count; i++)
-            {
-                if (this.people[i].currentX == x && this.people[i].currentY == y)
+                this.colonySize--;
+                Person p = null;
+                for (int i = 0; i < this.people.Count; i++)
                 {
-                    p = this.people[i];
-                    break;
+                    if (this.people[i].currentX == x && this.people[i].currentY == y)
+                    {
+                        p = this.people[i];
+                        break;
+                    }
                 }
-            }
-            if (p != null)
-            {
-                // remove from our people
-                this.people.Remove(p);
-                // update tile
-                TileGroup tilegroup = World.tiles[p.currentX, p.currentY];
-                tilegroup.removeOccupant();
-            }
+                if (p != null)
+                {
+                    // remove from our people
+                    this.people.Remove(p);
+                    // update tile
+                    TileGroup tilegroup = World.tiles[p.currentX, p.currentY];
+                    tilegroup.removeOccupant();
+                }
+           
         }
 
         public void update()

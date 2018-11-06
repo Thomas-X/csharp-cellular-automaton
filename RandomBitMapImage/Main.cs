@@ -18,7 +18,8 @@ namespace RandomBitMapImage
     public partial class Main : Form
     {
         // how many MS 
-        static int tickSpeed = 1; 
+        static int tickSpeed = 1;
+        private readonly object imageLock = new object();
         Random rand = new Random();
         World world;
 
@@ -30,10 +31,13 @@ namespace RandomBitMapImage
 
         public void tick(object sender, EventArgs e)
         {
-            this.world.onTick();
-            string stats = this.world.getColonyStats();
-            label1.Text = stats;
-            pictureBox1.Image = World.world;
+
+                this.world.onTick();
+                string stats = this.world.getColonyStats();
+                label1.Text = stats;
+            
+                pictureBox1.Image = World.world;
+            
         }
 
         private void setupWorld()
