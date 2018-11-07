@@ -31,8 +31,7 @@ namespace RandomBitMapImage
 
         public void tick(object sender, EventArgs e)
         {
-
-                this.world.onTick();
+            this.world.onTick();
                 string stats = this.world.getColonyStats();
                 label1.Text = stats;
             

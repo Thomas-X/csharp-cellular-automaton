@@ -22,6 +22,13 @@ namespace RandomBitMapImage
         public static Colony[] colonies;
         public static List<Thread> threads = new List<Thread>();
 
+        public static ThreadedWorld threadedWorld;
+
+        // in how many squares the bitmap should be split up in 
+        // x=y so if you want 4 threads, use 2. 
+        public static int howManyDrawThreads = 2;
+
+
         private static object worldSetPixelLock = new object();
 
         // since there is a setting for pixelsize meaning the tiles are not 1:1 to pixels, depending on the 
@@ -35,12 +42,17 @@ namespace RandomBitMapImage
             World.height = height;
             World.width = width;
             World.multiplier = World.pixelSize;
+
+            World.threadedWorld = new ThreadedWorld();
+
         }
 
         public static void setPixel(int x, int y, Color color)
         {
+
             lock(World.worldSetPixelLock)
             {
+                World.threadedWorld.setPixel(x, y, color);
                 World.world.SetPixel(x, y, color);
             }
         }
