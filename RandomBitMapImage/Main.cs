@@ -18,7 +18,7 @@ namespace RandomBitMapImage
     public partial class Main : Form
     {
         // how many MS 
-        static int tickSpeed = 1;
+        static int tickSpeed = 15;
         private readonly object imageLock = new object();
         Random rand = new Random();
         World world;

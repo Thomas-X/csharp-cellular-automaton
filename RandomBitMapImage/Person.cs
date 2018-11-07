@@ -25,6 +25,8 @@ namespace RandomBitMapImage
         public bool isSick;
         Color color;
 
+        private object moveLock = new object();
+
         public Person(int age, int strength, bool isSick, Color color)
         {
             this.color = color;
@@ -222,6 +224,8 @@ namespace RandomBitMapImage
 
         public void move (int x, int y)
         {
+            lock (moveLock)
+            {
                 this.currentX = x;
                 this.currentY = y;
                 // move to tile
@@ -239,7 +243,7 @@ namespace RandomBitMapImage
                     this.oldX = x;
                     this.oldY = y;
                 }
-            
+            }
         }
 
         public void setStartPosition(int[] startPosition)

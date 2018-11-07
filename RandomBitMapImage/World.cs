@@ -11,18 +11,18 @@ namespace RandomBitMapImage
 {
     class World
     {
-        public static int pixelSize = 16;
+        public static int pixelSize = 8;
         static int chanceToGetLand = 100;
         public static int height = 0;
         public static int width = 0;
-        public static int amountOfColonies = 2;
+        public static int amountOfColonies = 8;
         public static Random rand = new Random();
         public static Bitmap world = null;
         public static int multiplier = 0;
         public static Colony[] colonies;
         public static List<Thread> threads = new List<Thread>();
 
-        private static readonly Object worldTileLock = new Object();
+        private static object worldSetPixelLock = new object();
 
         // since there is a setting for pixelsize meaning the tiles are not 1:1 to pixels, depending on the 
         // pixelSize this tiles ratio is 1:pixelSize. 
@@ -35,6 +35,14 @@ namespace RandomBitMapImage
             World.height = height;
             World.width = width;
             World.multiplier = World.pixelSize;
+        }
+
+        public static void setPixel(int x, int y, Color color)
+        {
+            lock(World.worldSetPixelLock)
+            {
+                World.world.SetPixel(x, y, color);
+            }
         }
 
         public string getColonyStats()
@@ -73,12 +81,18 @@ namespace RandomBitMapImage
 
         public void onTick()
         {
-            for (int o = 0; o < colonies.Length;o++)
+            Task[] tasks = new Task[World.colonies.Length];
+            
+            for (int j = 0; j < World.colonies.Length;j++)
             {
-                //     Thread colonyThread = new Thread(new ThreadStart(colonies[o].update));
-                //     colonyThread.Start();  
-                colonies[o].update();
+                if (j < World.colonies.Length)
+                {
+                    Colony colony = World.colonies[j];
+                    Task task = Task.Factory.StartNew(() => colony.update());
+                    tasks.SetValue(task, j);
+                }
             }
+            Task.WaitAll(tasks);
         }
 
         private Colony[] createColonies()

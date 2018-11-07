@@ -16,7 +16,9 @@ namespace RandomBitMapImage
         public int x;
         public int y;
         public List<Tile> tiles = new List<Tile>();
-        
+
+        private object tileLock = new object();
+
         // TODO add tile properties like sea/land
         public TileGroup(int x, int y, bool isLand)
         {
@@ -52,10 +54,14 @@ namespace RandomBitMapImage
 
         private void modifyTile (int x, int y, Color color)
         {
-            for (int i = 0; i < this.tiles.Count; i++)
+            lock (tileLock)
             {
-                            this.tiles[i].editTile(color);
+                for (int i = 0; i < this.tiles.Count; i++)
+                {
+                    this.tiles[i].editTile(color);
+                }
             }
+            
         }
 
         public Tile createTile(int x, int y, Color color)
