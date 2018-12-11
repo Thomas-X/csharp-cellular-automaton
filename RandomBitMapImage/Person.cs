@@ -146,7 +146,7 @@ namespace RandomBitMapImage
                 // enemy dies! :)
                 if (enemy.strength < 0)
                 {
-                    Colony enemyColony = World.colonies[enemy.colonyID] ?? null;
+                    Colony enemyColony = World.colonies[enemy.colonyID];
                     if (enemyColony != null)
                     {
                         enemyColony.removePersonFromColony(enemy.currentX, enemy.currentY);
@@ -243,8 +243,7 @@ namespace RandomBitMapImage
                     this.oldX = x;
                     this.oldY = y;
                 }
-            }
-        }
+            }       }
 
         public void setStartPosition(int[] startPosition)
         {

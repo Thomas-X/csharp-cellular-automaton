@@ -93,18 +93,9 @@ namespace RandomBitMapImage
 
         public void onTick()
         {
-            Task[] tasks = new Task[World.colonies.Length];
             
-            for (int j = 0; j < World.colonies.Length;j++)
-            {
-                if (j < World.colonies.Length)
-                {
-                    Colony colony = World.colonies[j];
-                    Task task = Task.Factory.StartNew(() => colony.update());
-                    tasks.SetValue(task, j);
-                }
-            }
-            Task.WaitAll(tasks);
+            
+           
         }
 
         private Colony[] createColonies()

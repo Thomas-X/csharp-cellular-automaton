@@ -18,7 +18,7 @@ namespace RandomBitMapImage
     public partial class Main : Form
     {
         // how many MS 
-        static int tickSpeed = 15;
+        static int tickSpeed = 10;
         private readonly object imageLock = new object();
         Random rand = new Random();
         World world;
@@ -29,14 +29,47 @@ namespace RandomBitMapImage
             InitializeComponent();
         }
 
-        public void tick(object sender, EventArgs e)
+        public void tick()
         {
+<<<<<<< HEAD
             this.world.onTick();
                 string stats = this.world.getColonyStats();
                 label1.Text = stats;
+=======
+            Task[] tasks = new Task[World.colonies.Length];
+            for (int j = 0; j < World.colonies.Length; j++)
+            {
+                if (j < World.colonies.Length)
+                {
+                    Colony colony = World.colonies[j];
+                    Task task = Task.Factory.StartNew(() => colony.update());
+                    tasks.SetValue(task, j);
+                }
+            }
+            Task.WaitAll(tasks);
+
+            string stats = this.world.getColonyStats();
+
+            this.label1.Invoke((MethodInvoker) delegate {
+                // Running on the UI thread
+                this.label1.Text = stats;
+                this.pictureBox1.Image = World.world;
+            });
+
+            // label1.Text = stats;
+>>>>>>> support-multithreading
             
-                pictureBox1.Image = World.world;
+            // this.pictureBox1.Image = World.world;
             
+        }
+
+        private void onTick()
+        {
+            while (true)
+            {
+                Thread.Sleep(Main.tickSpeed);
+                this.tick();
+            }
         }
 
         private void setupWorld()
@@ -46,10 +79,8 @@ namespace RandomBitMapImage
             pictureBox1.Image = bmp;
             string stats = this.world.getColonyStats();
             label1.Text = stats;
-            Timer timer = new Timer();
-            timer.Interval = Main.tickSpeed;
-            timer.Tick += new EventHandler(this.tick);
-            timer.Start();
+            Task mainTicker = new Task(this.onTick); 
+            mainTicker.Start();
         }
 
         private void onLoadWorld(object sender, EventArgs e)
@@ -63,8 +94,8 @@ namespace RandomBitMapImage
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.setupWorld();
-            Console.WriteLine("you clicked on the button the re-render!!");
+          //  this.setupWorld();
+          //  Console.WriteLine("you clicked on the button the re-render!!");
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
