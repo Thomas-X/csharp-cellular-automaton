@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.startButton = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.helloToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
+            this.startButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -48,16 +48,6 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.LoadCompleted += new System.ComponentModel.AsyncCompletedEventHandler(this.pictureBox1_LoadCompleted);
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
-            // 
-            // startButton
-            // 
-            this.startButton.Location = new System.Drawing.Point(12, 12);
-            this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(93, 58);
-            this.startButton.TabIndex = 1;
-            this.startButton.Text = "Start";
-            this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.button1_Click);
             // 
             // contextMenuStrip1
             // 
@@ -82,6 +72,16 @@
             this.label1.Text = "label1";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
+            // startButton
+            // 
+            this.startButton.Location = new System.Drawing.Point(12, 12);
+            this.startButton.Name = "startButton";
+            this.startButton.Size = new System.Drawing.Size(93, 58);
+            this.startButton.TabIndex = 1;
+            this.startButton.Text = "Start";
+            this.startButton.UseVisualStyleBackColor = true;
+            this.startButton.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -104,10 +104,10 @@
         #endregion
 
         public System.Windows.Forms.PictureBox pictureBox1;
-        public System.Windows.Forms.Button startButton;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem helloToolStripMenuItem;
         private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.Button startButton;
     }
 }
 
