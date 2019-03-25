@@ -25,8 +25,6 @@ namespace RandomBitMapImage
         public bool isSick;
         Color color;
 
-        private object moveLock = new object();
-
         public Person(int age, int strength, bool isSick, Color color)
         {
             this.color = color;
@@ -87,15 +85,14 @@ namespace RandomBitMapImage
 
                     case "win":
                         // because if we have won we can move over and take his spot
-                        //return coords;
-                        break;
+                        return coords;
 
                     case "lose":
                         return new int[2] { -1337, -1337 };
 
                     case "stalemate":
                         break;
-
+                    
                 }
             }
             if (tilegroup.checkIfHasOccupant() == true)
@@ -110,53 +107,51 @@ namespace RandomBitMapImage
 
         public FightCondition fight(int enemyX, int enemyY)
         {
-                Person enemy = World.tiles[enemyX, enemyY].occupant;
-                // enemy shouldn't be null technically but still check for it.
-                if (enemy == null)
-                {
-                    return new FightCondition("nobattle");
-                }
-                int ownPower = this.strength / Person.powerDivider;
-                int enemyPower = enemy.strength / Person.powerDivider;
+            Person enemy = World.tiles[enemyX, enemyY].occupant;
+            // enemy shouldn't be null technically but still check for it.
+            if (enemy == null)
+            {
+                return new FightCondition("nobattle");
+            }
+            int ownPower = this.strength / Person.powerDivider;
+            int enemyPower = enemy.strength / Person.powerDivider;
 
-                // if we lose
-                if (ownPower < enemyPower)
-                {
-                    this.strength -= enemyPower * Person.damageRecieveModifier;
-                }
-                // if we win
-                if (ownPower > enemyPower)
-                {
-                    enemy.strength -= ownPower * Person.damageRecieveModifier;
-                }
-                // if we stalemate
-                if (ownPower == enemyPower)
-                {
-                    this.strength -= ownPower * Person.damageRecieveModifier;
-                    enemy.strength -= enemyPower * Person.damageRecieveModifier;
-                    // dont return stalemate value here in case we both died
-                }
+            // if we lose
+            if (ownPower < enemyPower)
+            {
+                this.strength -= enemyPower * Person.damageRecieveModifier;
+            }
+            // if we win
+            if (ownPower > enemyPower)
+            {
+                enemy.strength -= ownPower * Person.damageRecieveModifier;
+            }
+            // if we stalemate
+            if (ownPower == enemyPower)
+            {
+                this.strength -= ownPower * Person.damageRecieveModifier;
+                enemy.strength -= enemyPower * Person.damageRecieveModifier;
+                // dont return stalemate value here in case we both died
+            }
 
-                // we die :(
-                if (this.strength < 0)
+            // we die :(
+            if (this.strength < 0)
+            {
+                World.colonies[this.colonyID].removePersonFromColony(this.currentX, this.currentY);
+                return new FightCondition("lose");
+            }
+            // enemy dies! :)
+            if (enemy.strength < 0)
+            {
+                Colony enemyColony = World.colonies[enemy.colonyID] ?? null;
+                if (enemyColony != null)
                 {
-                    World.colonies[this.colonyID].removePersonFromColony(this.currentX, this.currentY);
-                    return new FightCondition("lose");
+                    enemyColony.removePersonFromColony(enemy.currentX, enemy.currentY);
                 }
-                // enemy dies! :)
-                if (enemy.strength < 0)
-                {
-                    Colony enemyColony = World.colonies[enemy.colonyID];
-                    if (enemyColony != null)
-                    {
-                        enemyColony.removePersonFromColony(enemy.currentX, enemy.currentY);
-                    }
-                    return new FightCondition("win");
-                }
-                return new FightCondition("stalemate");
-           
+                return new FightCondition("win");
+            }
+            return new FightCondition("stalemate");
         }
-
 
         public void update ()
         {
@@ -166,13 +161,13 @@ namespace RandomBitMapImage
             {
                 return;
             }
-                this.move(coords[0], coords[1]);
+            this.move(coords[0], coords[1]);
 
             // reproduce
             // 30% chance to increase chance on move
-            // 1% chance to increase age on move
+            // 5% chance to increase age on move
             bool increaseStrength = World.rand.Next(0, 100) < 31 ? true : false;
-            bool increaseAge = World.rand.Next(0, 100) < 1 ? true : false;
+            bool increaseAge = World.rand.Next(0, 100) < 5 ? true : false;
 
             if (increaseStrength == true)
             {
@@ -185,7 +180,7 @@ namespace RandomBitMapImage
 
             // minimum strength to make a baby / age to die
             // TODO add traits
-            if (this.strength == 101 && this.age < 90)
+            if (this.strength == 105 && this.age < 90)
             {
                 World.colonies[this.colonyID].addPersonToColony(this.currentX, this.currentY);
                 this.strength = 0;
@@ -224,26 +219,24 @@ namespace RandomBitMapImage
 
         public void move (int x, int y)
         {
-            lock (moveLock)
+            this.currentX = x;
+            this.currentY = y;
+            // move to tile
+            TileGroup tilegroup = World.tiles[x, y];
+            // avoid moving on sea
+            if (tilegroup.isLand == false)
             {
-                this.currentX = x;
-                this.currentY = y;
-                // move to tile
-                TileGroup tilegroup = World.tiles[x, y];
-                // avoid moving on sea
-                if (tilegroup.isLand == false)
-                {
-                    return;
-                }
-                tilegroup.setOccupant(x, y, this.color, this);
-                if (this.moveCount > 0)
-                {
-                    TileGroup tilegroupOld = World.tiles[this.oldX, this.oldY];
-                    tilegroupOld.removeOccupant();
-                    this.oldX = x;
-                    this.oldY = y;
-                }
-            }       }
+                return;
+            } 
+            tilegroup.setOccupant(x, y, this.color, this);
+            if (this.moveCount > 0)
+            {
+                TileGroup tilegroupOld = World.tiles[this.oldX, this.oldY];
+                tilegroupOld.removeOccupant();
+                this.oldX = x;
+                this.oldY = y;
+            }
+        }
 
         public void setStartPosition(int[] startPosition)
         {

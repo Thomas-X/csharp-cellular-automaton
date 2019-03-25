@@ -18,7 +18,3 @@ C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\obj\Debug\RandomBitMapIm
 C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\obj\Debug\RandomBitMapImage.csproj.CoreCompileInputs.cache
 C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\obj\Debug\RandomBitMapImage.exe
 C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\obj\Debug\RandomBitMapImage.pdb
-C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\bin\Debug\RandomBitMapImage.exe.manifest
-C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\bin\Debug\RandomBitMapImage.application
-C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\obj\Debug\RandomBitMapImage.exe.manifest
-C:\gitrepos\csharp-cellular-automaton\RandomBitMapImage\obj\Debug\RandomBitMapImage.application
