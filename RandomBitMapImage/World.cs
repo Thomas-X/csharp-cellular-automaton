@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,20 +11,30 @@ namespace RandomBitMapImage
 {
     class World
     {
-        public static int pixelSize = 2;
+        public static int pixelSize = 8;
         static int chanceToGetLand = 100;
         public static int height = 0;
         public static int width = 0;
-        public static int amountOfColonies = 6;
+        public static int amountOfColonies = 8;
         public static Random rand = new Random();
         public static Bitmap world = null;
         public static int multiplier = 0;
         public static Colony[] colonies;
+        public static List<Thread> threads = new List<Thread>();
+
+        public static ThreadedWorld threadedWorld;
+
+        // in how many squares the bitmap should be split up in 
+        // x=y so if you want 4 threads, use 2. 
+        public static int howManyDrawThreads = 2;
+
+
+        private static object worldSetPixelLock = new object();
 
         // since there is a setting for pixelsize meaning the tiles are not 1:1 to pixels, depending on the 
         // pixelSize this tiles ratio is 1:pixelSize. 
         // so when a bitmap is 400x400 and the pixelSize = 8 the tiles tilegroup would be a size of 50,50 (400/8)
-        
+
         public static TileGroup[,] tiles;
 
         public World (int height, int width)
@@ -31,6 +42,19 @@ namespace RandomBitMapImage
             World.height = height;
             World.width = width;
             World.multiplier = World.pixelSize;
+
+            World.threadedWorld = new ThreadedWorld();
+
+        }
+
+        public static void setPixel(int x, int y, Color color)
+        {
+
+            lock(World.worldSetPixelLock)
+            {
+                World.threadedWorld.setPixel(x, y, color);
+                World.world.SetPixel(x, y, color);
+            }
         }
 
         public string getColonyStats()
@@ -65,19 +89,13 @@ namespace RandomBitMapImage
             World.colonies = this.createColonies();
             return World.world;
         }
-
-        // TODO implement updating the current world (bitmap)
-        public Bitmap updateWorld()
-        {
-            return World.world;
-        }
+        
 
         public void onTick()
         {
-            for (int o = 0; o < colonies.Length;o++)
-            {
-                colonies[o].update();
-            }
+            
+            
+           
         }
 
         private Colony[] createColonies()
